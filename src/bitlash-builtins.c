@@ -69,7 +69,9 @@ const prog_char builtin_table[] PROGMEM = {
 		"print 2+2")
 //		"while 1 {print millis;delay(999);}")
 #else
-		"print \"bitlash here! v2.0 (c) 2013 Bill Roy -type HELP-\",free,\"bytes free\"")
+		// While line 116/117 says to keep copyright notices I will restucture it to reflect the project I'm using it for.
+		//"print \"bitlash here! v2.0 (c) 2013 Bill Roy -type HELP-\",free,\"bytes free\"")
+		"print \"bitlash I-MOD V1.0 (c) 2013 Bill Roy, 2021 Infer4y\r\n\",free,\"bytes free\"")
 #endif
 
 	// Add user built-ins here.  Some examples:

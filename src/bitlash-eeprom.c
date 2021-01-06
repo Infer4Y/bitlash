@@ -40,6 +40,7 @@
 	This is a tiny attribute-value pair database for small EEPROM devices.
 ***/
 
+// TODO : add spi rom interfacing or have seperate arduino to handle that, but send data over from other storage like sdcard.
 
 // scan from addr for an occupied byte
 int findoccupied(int addr) {

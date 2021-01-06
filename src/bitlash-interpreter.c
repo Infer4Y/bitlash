@@ -63,10 +63,18 @@ void nukeeeprom(void) {
 
 
 #if defined(AVR_BUILD)
+
+#include <avr/wdt.h>
+
 void cmd_boot(void) {
 	// This is recommended but does not work on Arduino
 	// Reset_AVR();
-	void (*bootvec)(void) = 0; (*bootvec)(); 	// we jump through 0 instead
+	// Original code from bitlash's function
+	// void (*bootvec)(void) = 0; (*bootvec)(); 	// we jump through 0 instead
+	// The two lines of code are sourced from here https://github.com/WickedDevice/SoftReset/blob/master/SoftReset.h 
+	// Here it should hopfully reset the avr controllor.
+	wdt_enable(WDTO_15MS);
+    for(;;) { }
 }
 #elif defined(ARM_BUILD)
 

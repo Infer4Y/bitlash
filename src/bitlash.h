@@ -530,8 +530,21 @@ void eeputs(int);
 									// http://ww1.microchip.com/downloads/en/DeviceDoc/21713J.pdf
 									// Specifically, the DigiX has such a module onboard
 									// https://digistump.com/wiki/digix/tutorials/eeprom
+									//
+//#define EEPROM_MICROCHIP_24XX256	// Uncomment to enable EEPROM via I2C
+									// Supports a Microchip 24xx32A EEPROM module attached to the I2C bus
+									// https://ww1.microchip.com/downloads/en/DeviceDoc/AT24C256C-I2C-Compatible-Serial-EEPROM-256-Kbit-20006042A.pdf
+
 
 #define EEPROM_ADDRESS 0x50			// default EEPROM address for DigiX boards
+
+/////////////////////////////////////////////
+// External EEPROM (SPI)
+// Will use pins 10/11/12/13 for uno/nano
+//#define EEPROM_MICROCHIP_25XX128	// Uncomment to enable EEPROM via SPI
+									// Supports a Amtel 25xx128 EEPROM module attached to the SPI bus
+									// https://ww1.microchip.com/downloads/en/DeviceDoc/AT25128B-AT25256B-SPI-Serial-EEPROM-Data-Sheet-20006193A.pdf
+
 
 ////////////////////////
 //
@@ -542,6 +555,12 @@ void eeputs(int);
 #if defined(EEPROM_MICROCHIP_24XX32A)
 	#define ENDDB 4095
 	#define ENDEEPROM 4095
+#elif defined(EEPROM_MICROCHIP_24XX256)
+	#define ENDDB 32768
+	#define ENDEEPROM 32768
+#elif defined(EEPROM_MICROCHIP_25XX128)
+	#define ENDDB 16384
+	#define ENDEEPROM 16384
 #else
 	#define ENDDB E2END
 	#define ENDEEPROM E2END

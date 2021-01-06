@@ -29,7 +29,7 @@
 ***/
 #include "bitlash.h"
 
-#if defined(EEPROM_MICROCHIP_24XX32A)
+#if defined(EEPROM_MICROCHIP_24XX32A) || defined(EEPROM_MICROCHIP_24XX256)
 
 	#include "Wire.h"
 	// A cache to speed up eeprom reads
@@ -76,6 +76,96 @@
 		Wire.write(lowByte(addr));            
 		Wire.write((byte) value);             
 		Wire.endTransmission(true);
+		delay(6);  
+	}
+
+	uint8_t eeread(int addr) { return cache_eeprom[addr]; }
+
+#elif defined(EEPROM_MICROCHIP_25XX128)
+
+	#define EDATAOUT 11//MOSI
+	#define EDATAIN  12//MISO 
+	#define ESPICLOCK  13//sck
+	#define ESLAVESELECT 10//ss
+
+	//opcodes
+	#define EEWREN  6
+	#define EEWRDI  4
+	#define EERDSR  5
+	#define EEWRSR  1
+	#define EEREAD  3
+	#define EEWRITE 2
+
+	// A cache to speed up eeprom reads
+	uint8_t cache_eeprom[ENDEEPROM];
+
+	byte spi_transfer(volatile byte data) {
+		SPDR = data;                    // Start the transmission
+
+		while (!(SPSR & (1<<SPIF)))     // Wait the end of the transmission
+		{};
+
+		return SPDR;                    // return the received byte
+	}
+
+
+	// read a 32 byte page from eeprom
+	// source: https://www.arduino.cc/en/Tutorial/SPIEEPROM
+	void extEEPROMreadPage(int EEPROM_addr, int addr, uint8_t* data_target, int amount, int offset) {
+		digitalWrite(SLAVESELECT,LOW);
+
+	  	for(int i = 0; i<amount; i++) {
+			spi_transfer(READ); //transmit read opcode
+
+			spi_transfer(highByte((EEPROM_addr+i));   //send MSByte address first
+
+			spi_transfer(lowByte(EEPROM_addr+i));      //send LSByte address
+	    	data_target[offset + i] = spi_transfer(0xFF); //get data byte
+		
+		}
+
+		digitalWrite(SLAVESELECT,HIGH); //release chip, signal end transfer  
+	}  
+
+
+	// initializes SPI bus and loads eeprom contents into cache
+	void eeinit(void) {
+		pinMode(DATAOUT, OUTPUT);
+
+  		pinMode(DATAIN, INPUT);
+
+  		pinMode(SPICLOCK,OUTPUT);
+
+		pinMode(SLAVESELECT,OUTPUT);
+
+		digitalWrite(SLAVESELECT,HIGH);
+		
+		for(int offset=0; offset<=ENDEEPROM; offset+=32) {
+			extEEPROMreadPage(EEPROM_ADDRESS, offset, cache_eeprom, 32, offset); 
+		}
+	}
+
+	// write a single byte to eeprom
+	// source: https://www.arduino.cc/en/Tutorial/SPIEEPROM
+	void eewrite(int addr, uint8_t value) { 
+		
+		// update cache first
+		cache_eeprom[addr] = value;
+
+		digitalWrite(SLAVESELECT,LOW);
+  		spi_transfer(WREN); //write enable
+  		digitalWrite(SLAVESELECT,HIGH);
+
+  		delay(10);
+
+  		digitalWrite(SLAVESELECT,LOW);
+  		spi_transfer(WRITE); //write instruction
+		spi_transfer(highByte(addr>>8));   //send MSByte address first
+  		spi_transfer(lowByte(addr));      //send LSByte address
+
+		spi_transfer((char)(value));
+
+		digitalWrite(SLAVESELECT,HIGH); //release chip, signal end transfer 
 		delay(6);  
 	}
 

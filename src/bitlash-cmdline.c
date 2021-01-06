@@ -44,7 +44,7 @@ char lbuf[LBUFLEN];
 // Help text
 //
 #if !defined(TINY_BUILD)
-const prog_char helptext[] PROGMEM = { "http://bitlash.net\r\nSee LICENSE for license\r\nPins: d0-22,a0-22  Variables: a-z, 32 bit long integers\r\nOperators: + - * / ( ) < <= > >= == != << >> ! ^ & | ++ -- :=\r\nCommands: \0" };
+const prog_char helptext[] PROGMEM = { "http://bitlash.net\r\nSee LICENSE for license\r\nThis is a modded version and project home is \r\nhttps://github.com/Infer4Y/bitlash\r\nPins: d0-22,a0-22  Variables: a-z, 32 bit long integers\r\nOperators: + - * / ( ) < <= > >= == != << >> ! ^ & | ++ -- :=\r\nCommands: \0" };
 #else
 const prog_char helptext[] PROGMEM = { "http://bitlash.net\r\n\0" };
 #endif

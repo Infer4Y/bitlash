@@ -36,7 +36,7 @@
 #include "bitlash.h"
 
 #if defined(AVR_BUILD)
-#include "avr/eeprom.h"
+#include "avr/eeprom.h" //TODO : Change all usages of EEPROM to fit an exturnal solution.
 #endif
 
 // Interpreter globals
