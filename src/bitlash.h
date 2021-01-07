@@ -531,8 +531,8 @@ void eeputs(int);
 									// Specifically, the DigiX has such a module onboard
 									// https://digistump.com/wiki/digix/tutorials/eeprom
 									//
-//#define EEPROM_MICROCHIP_24XX256	// Uncomment to enable EEPROM via I2C
-									// Supports a Microchip 24xx32A EEPROM module attached to the I2C bus
+#define EEPROM_MICROCHIP_24XX256	// Uncomment to enable EEPROM via I2C
+									// Supports a Microchip 24xx256 EEPROM module attached to the I2C bus
 									// https://ww1.microchip.com/downloads/en/DeviceDoc/AT24C256C-I2C-Compatible-Serial-EEPROM-256-Kbit-20006042A.pdf
 
 
