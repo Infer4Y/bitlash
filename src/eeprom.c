@@ -81,11 +81,11 @@
 
 	//In order to favor small memspaces for large eeproms this'll do well.
 	uint8_t eeread(int addr) { 
-		Wire.beginTransmission(EEPROM_addr);            
+		Wire.beginTransmission(addr);            
 	  	Wire.write(highByte(addr));                     
 	  	Wire.write(lowByte(addr));                      
 	  	Wire.endTransmission(true);                     
-	  	Wire.requestFrom(EEPROM_addr, 1, true);  
+	  	Wire.requestFrom(addr, 1, true);  
 
 		while(Wire.available() == 0)
 	  	{} ; 
