@@ -33,7 +33,7 @@
 
 	#include "Wire.h"
 	// A cache to speed up eeprom reads
-	uint8_t cache_eeprom[ENDEEPROM];
+	//uint8_t cache_eeprom[ENDEEPROM];
 
 
 	// read a 32 byte page from eeprom
@@ -58,9 +58,9 @@
 	void eeinit(void) {
 		Wire.begin();
 		
-		for(int offset=0; offset<=ENDEEPROM; offset+=32) {
-			extEEPROMreadPage(EEPROM_ADDRESS, offset, cache_eeprom, 32, offset); 
-		}
+		//for(int offset=0; offset<=ENDEEPROM; offset+=32) {
+		//extEEPROMreadPage(EEPROM_ADDRESS, offset, cache_eeprom, 32, offset); 
+		//}
 	}
 
 	// write a single byte to eeprom
@@ -68,7 +68,7 @@
 	void eewrite(int addr, uint8_t value) { 
 		
 		// update cache first
-		cache_eeprom[addr] = value;
+		//cache_eeprom[addr] = value;
 
 		// write back to eeprom
 		Wire.beginTransmission(EEPROM_ADDRESS);
@@ -79,7 +79,19 @@
 		delay(6);  
 	}
 
-	uint8_t eeread(int addr) { return cache_eeprom[addr]; }
+	//In order to favor small memspaces for large eeproms this'll do well.
+	uint8_t eeread(int addr) { 
+		Wire.beginTransmission(EEPROM_addr);            
+	  	Wire.write(highByte(addr));                     
+	  	Wire.write(lowByte(addr));                      
+	  	Wire.endTransmission(true);                     
+	  	Wire.requestFrom(EEPROM_addr, 1, true);  
+
+		while(Wire.available() == 0)
+	  	{} ; 
+		
+		return Wire.read();; //cache_eeprom[addr]; 
+	}
 
 #elif defined(EEPROM_MICROCHIP_25XX128)
 
@@ -97,7 +109,7 @@
 	#define EEWRITE 2
 
 	// A cache to speed up eeprom reads
-	uint8_t cache_eeprom[ENDEEPROM];
+	//uint8_t cache_eeprom[ENDEEPROM];
 
 	byte spi_transfer(volatile byte data) {
 		SPDR = data;                    // Start the transmission
@@ -169,7 +181,20 @@
 		delay(6);  
 	}
 
-	uint8_t eeread(int addr) { return cache_eeprom[addr]; }
+	uint8_t eeread(int addr) { 
+		digitalWrite(SLAVESELECT,LOW);
+		spi_transfer(READ); //transmit read opcode
+
+		spi_transfer(highByte((EEPROM_addr+i));   //send MSByte address first
+
+		spi_transfer(lowByte(EEPROM_addr+i));      //send LSByte address
+
+		uint8_t value = spi_transfer(0xFF);
+		
+  		digitalWrite(SLAVESELECT,HIGH);
+
+		return value; 
+	}
 
 #elif (defined(AVR_BUILD)) || ( (defined(ARM_BUILD)) && (ARM_BUILD==2))
 	// AVR or Teensy 3
