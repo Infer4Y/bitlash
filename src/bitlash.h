@@ -659,7 +659,6 @@ extern byte suspendBackground;
 #if defined(AVR_BUILD)
 void eewrite(int, byte) __attribute__((noinline));
 byte eeread(int) __attribute__((noinline));
-
 #elif defined(ARM_BUILD)
 void eewrite(int, byte);
 byte eeread(int);

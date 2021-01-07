@@ -29,7 +29,7 @@
 ***/
 #include "bitlash.h"
 
-#if defined(EEPROM_MICROCHIP_24XX32A) || defined(EEPROM_MICROCHIP_24XX256)
+#if (defined(EEPROM_MICROCHIP_24XX32A)) || (defined(EEPROM_MICROCHIP_24XX256))
 
 	#include "Wire.h"
 	// A cache to speed up eeprom reads
@@ -85,7 +85,7 @@
 	  	Wire.write(highByte(addr));                     
 	  	Wire.write(lowByte(addr));                      
 	  	Wire.endTransmission(true);                     
-	  	Wire.requestFrom(addr, 1, true);  
+	  	Wire.requestFrom(EEPROM_ADDRESS, 1, true);  
 
 		while(Wire.available() == 0)
 	  	{} ; 
